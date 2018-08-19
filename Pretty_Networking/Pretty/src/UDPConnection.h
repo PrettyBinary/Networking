@@ -22,6 +22,10 @@ public:
 	bool HasQuit() { return m_Quit; }
 
 private:
+    bool GetSendee(IPaddress* ipAddress, UDPpacket* packet);
+
+    std::string ConvertIP(uint32_t ipData);
+
 	bool m_Quit;
 	UDPsocket	m_Socket;
 	UDPpacket*	m_Packet;

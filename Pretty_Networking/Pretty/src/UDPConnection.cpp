@@ -159,3 +159,22 @@ void UDPConnection::Shutdown()
 	SDLNet_FreePacket(m_Packet);
 	SDLNet_Quit();
 }
+
+bool UDPConnection::GetSendee(IPaddress* ipAddress, UDPpacket* packet)
+{
+    if (SDLNet_ResolveHost(ipAddress, ConvertIP(packet->address.host).c_str(), packet->address.port) == -1) {
+        std::cout << "\tSDLNet_ResolveHost failed : " << SDLNet_GetError() << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+std::string UDPConnection::ConvertIP(uint32_t ipData)
+{
+    std::string converted = std::to_string(((ipData >> 24) & 0xff)) + '.' +
+        std::to_string(((ipData >> 16) & 0xff)) + '.' +
+        std::to_string(((ipData >> 8) & 0xff)) + '.' +
+        std::to_string((ipData & 0xff));
+    return converted;
+}

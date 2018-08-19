@@ -215,6 +215,12 @@ int main(int argc, char* argv[])
     connection.AllocatePacket(512);
     connection.Send("Sending A Message");
 
+    while (!connection.Receive()) {
+
+    }
+
+    system("pause");
+
 
 
     //)//!connection.HasQuit())
