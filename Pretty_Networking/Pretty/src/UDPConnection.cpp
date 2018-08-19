@@ -32,13 +32,11 @@ bool UDPConnection::InitializeSDLNetwork()
 	return true;
 }
 
-bool UDPConnection::OpenLocalHost()
+bool UDPConnection::OpenPort(uint32_t port)
 {
 	// Sets our sovket with our local port
-	Uint16 port = 0;
-	m_Socket = SDLNet_UDP_Open(port);
 	
-	std::cout << "Opening local host with port number:" << port << "...\n";
+	m_Socket = SDLNet_UDP_Open(port);
 
 	if (m_Socket == nullptr)
 	{
@@ -50,19 +48,19 @@ bool UDPConnection::OpenLocalHost()
 	return true;
 }
 
-bool UDPConnection::OpenServer()
+bool UDPConnection::Connect(const std::string& destinationIP, uint32_t destinationPort)
 {
 
 	// Set IP and port number with correct endianess
 	Uint16 port = 0;
 	
-	if (SDLNet_ResolveHost(&m_ServerIP, NULL, port) == -1)
+	if (SDLNet_ResolveHost(&m_ServerIP, destinationIP.c_str() , destinationPort) == -1)
 	{
 		std::cout << "\tSDLNet_ResolveHost failed : " << SDLNet_GetError() << std::endl;
 		return false;
 	}
 
-	std::cout << "Setting IP ( " << m_ServerIP.host << " ) " << "and port ( " << m_ServerIP.port << " )\n";
+	std::cout << "Setting IP ( " << destinationIP.c_str() << " ) " << "and port ( " << destinationPort << " )\n";
 	std::cout << "\tSuccess!\n\n";
 
 	return true;
@@ -135,25 +133,25 @@ bool UDPConnection::Send(const std::string &str)
 }
 
 
-void UDPConnection::Receive()
+bool UDPConnection::Receive()
 {
+
+    bool gotData = false;
 	std::cout
 		<< "==========================================================================================================\n"
 		<< "Check for data...\n";
 
 	// Check t see if there is a packet wauting for us...
-	if (SDLNet_UDP_Recv(m_Socket, m_Packet))
+	if (SDLNet_UDP_Recv(m_Socket, m_Packet) > 0)
 	{
+        gotData = true;
 		std::cout << "\tData received : " << m_Packet->data << "\n";
 
 		// If the data is "quit"
 		if (strcmp((char *)m_Packet->data, "quit") == 0)
 			m_Quit = true;
 	}
-	else
-		std::cout << "\tNo data received!\n";
-
-	std::cout << "==========================================================================================================\n";
+	return gotData;
 }
 
 void UDPConnection::Shutdown()

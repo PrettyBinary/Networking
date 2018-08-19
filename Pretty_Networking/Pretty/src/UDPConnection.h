@@ -11,11 +11,11 @@ public:
 	static bool InitializeSDL();
 	static bool InitializeSDLNetwork();
 	
-	bool OpenLocalHost();
-	bool OpenServer();
+	bool OpenPort(uint32_t port = 0);
+	bool Connect(const std::string& destinationIP, uint32_t destinationPort);
 	bool AllocatePacket(int32_t packetSize);
 	bool Send(const std::string &str);
-	void Receive();
+	bool Receive();
 
 	void Shutdown();
 

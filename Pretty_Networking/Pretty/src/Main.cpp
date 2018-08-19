@@ -193,16 +193,33 @@ int main(int argc, char* argv[])
 	UDPConnection::InitializeSDL();
 	UDPConnection::InitializeSDLNetwork();
 
-	UDPConnection connection;
-	if (!connection.OpenLocalHost())	{ return -1; }
-	if (!connection.OpenServer())		{ return -1; }
-	connection.AllocatePacket(512);
+    UDPConnection connection;
+
+    /*SERVER TYPE CONNECTION
+    connection.OpenPort(12321);
+
 	
 	uint8_t command = 0;
 
-	while (!connection.HasQuit())
-	{
-		std::cout
+    while(!connection.HasQuit()){
+        connection.Receive()
+        
+    }
+
+    */
+
+    //CLIENT SIDE
+    connection.OpenPort();
+    connection.Connect("192.168.1.72", 12321);
+
+    connection.AllocatePacket(512);
+    connection.Send("Sending A Message");
+
+
+
+    //)//!connection.HasQuit())
+	//{
+		/*std::cout
 			<< "Your command : "
 			<< "\n\t0 : Send a message"
 			<< "\n\t1 : Quit"
@@ -218,8 +235,7 @@ int main(int argc, char* argv[])
 		else if (command == '2')
 			connection.Receive();
 		else
-			std::cout << "Illegal command\n";
-	}
+			std::cout << "Illegal command\n";*/
 
 	return 0;
 }
